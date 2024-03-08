@@ -121,3 +121,5 @@ local.properties
 /buildSrc/build/kotlin/compileKotlin/cacheable/last-build.bin
 /buildSrc/build/kotlin/compileKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin
 /buildSrc/build/kotlin/compileKotlin/local-state/build-history.bin
+/buildSrc/build/classes/kotlin/main/MainBuildPluginKt$addAndroidSection$1$5.class
+/buildSrc/build/classes/kotlin/main/MainBuildPluginKt$addAndroidSection$1$6.class
