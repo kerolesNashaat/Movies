@@ -59,7 +59,7 @@ dependencies {
     test()
     compose()
     hilt()
-    gson()
+    coil()
     navigation()
 }
 

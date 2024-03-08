@@ -18,6 +18,7 @@ dependencies {
     material()
     hilt()
     compose()
+    coil()
 }
 
 kapt {

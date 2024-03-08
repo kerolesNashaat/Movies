@@ -3,6 +3,7 @@ plugins {
     `kotlin-android`
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    `kotlin-parcelize`
 }
 apply<MainBuildPlugin>()
 
@@ -16,7 +17,8 @@ dependencies {
     appcompat()
     material()
     hilt()
-    gson()
+    retrofit()
+    crypto()
 }
 
 // Allow references to generated code

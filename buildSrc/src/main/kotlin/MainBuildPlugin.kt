@@ -50,7 +50,16 @@ private fun LibraryExtension.addAndroidSection() {
         }
 
         buildFeatures {
+            compose = true
             buildConfig = true
+        }
+
+        buildFeatures {
+            compose = true
+            buildConfig = true
+        }
+        composeOptions {
+            kotlinCompilerExtensionVersion = Versions.KOTLIN_COMPILER_EXTENSION_VERSION
         }
     }
 }

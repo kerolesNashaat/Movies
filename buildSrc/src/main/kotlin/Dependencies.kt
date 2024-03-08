@@ -2,6 +2,7 @@ import org.gradle.kotlin.dsl.DependencyHandlerScope
 
 object Configuration {
     const val IMPLEMENTATION = "implementation"
+    const val ANNOTATION_PROCESSOR = "annotationProcessor"
     const val TEST_IMPLEMENTATION = "testImplementation"
     const val ANDROID_TEST_IMPLEMENTATION = "androidTestImplementation"
     const val DEBUG_IMPLEMENTATION = "debugImplementation"
@@ -49,7 +50,8 @@ fun DependencyHandlerScope.hilt() {
     add(Configuration.IMPLEMENTATION, Dependencies.HILT_NAVIGATION_COMPOSE)
 }
 
-fun DependencyHandlerScope.gson() {
+fun DependencyHandlerScope.retrofit() {
+    add(Configuration.IMPLEMENTATION, Dependencies.RETROFIT)
     add(Configuration.IMPLEMENTATION, Dependencies.GSON)
 }
 
@@ -57,4 +59,21 @@ fun DependencyHandlerScope.navigation() {
     add(Configuration.IMPLEMENTATION, Dependencies.NAVIGATION_COMPOSE)
     add(Configuration.IMPLEMENTATION, Dependencies.NAVIGATION_FRAGMENT)
     add(Configuration.IMPLEMENTATION, Dependencies.NAVIGATION_UI)
+}
+
+fun DependencyHandlerScope.coil() {
+    add(Configuration.IMPLEMENTATION, Dependencies.COIL)
+}
+fun DependencyHandlerScope.room() {
+    add(Configuration.IMPLEMENTATION, Dependencies.ROOM_RUNTIME)
+    add(Configuration.ANNOTATION_PROCESSOR, Dependencies.ROOM_COMPILER)
+    add(Configuration.KAPT, Dependencies.ROOM_COMPILER)
+    add(Configuration.IMPLEMENTATION, Dependencies.ROOM_KTX)
+    add(Configuration.IMPLEMENTATION, Dependencies.ROOM_GUAVA)
+    add(Configuration.TEST_IMPLEMENTATION, Dependencies.ROOM_TESTING)
+    add(Configuration.IMPLEMENTATION, Dependencies.ROOM_PAGING)
+}
+
+fun DependencyHandlerScope.crypto(){
+    add(Configuration.IMPLEMENTATION, Dependencies.CRYPTO)
 }

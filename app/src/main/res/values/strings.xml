@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">MoviesApp</string>
+    <string name="app_name" translatable="false">MoviesApp</string>
+    <string name="nowPlaying">Now Playing</string>
+    <string name="popular">Popular</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="failedToGetData">Failed to get data</string>
 </resources>
