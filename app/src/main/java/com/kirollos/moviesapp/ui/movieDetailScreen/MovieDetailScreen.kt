@@ -29,6 +29,8 @@ import com.kirollos.common.components.LoadingContent
 import com.kirollos.common.size_16dp
 import com.kirollos.common.size_8dp
 import com.kirollos.moviesapp.R
+import com.kirollos.moviesapp.ui.listScreen.GetImageFromUrl
+import com.kirollos.moviesapp.ui.listScreen.getImageUrl
 import com.kirollos.moviesapp.ui.utils.ListUiState
 
 @Composable
@@ -67,26 +69,18 @@ fun MovieDetailContent(state: ListUiState, viewModel: MovieDetailsViewModel) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val imageUrl = remember { StringBuilder("") }
-            val imageBaseUrl = config.images?.secureBaseUrl
-            val size =
-                config.images?.posterSizes?.find { it?.contains("original")!! }.toString()
-            imageUrl.append(imageBaseUrl).append(size).append("/")
-                .append(movieDetails!!.posterPath)
+            val imageUrl = remember {
+                getImageUrl(config, posterPath = movieDetails!!.posterPath ?: "",
+                    imageResolution = "original")
+            }
 
-            AsyncImage(
-                model = imageUrl.toString(),
-                placeholder = painterResource(androidx.constraintlayout.widget.R.drawable.abc_btn_radio_to_on_mtrl_000),
-                error = painterResource(id = com.google.android.material.R.drawable.abc_ic_voice_search_api_material),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.clip(RectangleShape)
-            )
+            GetImageFromUrl(imageUrl = imageUrl)
+
             Column(
                 modifier = Modifier.padding(size_16dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                GetText(text = movieDetails.overview ?: "")
+                GetText(text = movieDetails!!.overview ?: "")
                 Spacer(modifier = Modifier.height(size_16dp))
                 val genres = remember { StringBuilder("") }
                 movieDetails.genres?.map { it?.name }?.forEachIndexed { index, name ->

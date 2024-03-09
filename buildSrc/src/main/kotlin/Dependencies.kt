@@ -77,3 +77,7 @@ fun DependencyHandlerScope.room() {
 fun DependencyHandlerScope.crypto(){
     add(Configuration.IMPLEMENTATION, Dependencies.CRYPTO)
 }
+fun DependencyHandlerScope.paging3(){
+    add(Configuration.IMPLEMENTATION, Dependencies.PAGING_RUNTIME)
+    add(Configuration.IMPLEMENTATION, Dependencies.PAGING3_COMPOSE)
+}

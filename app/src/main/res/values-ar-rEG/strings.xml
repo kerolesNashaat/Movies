@@ -4,4 +4,5 @@
     <string name="popular">الأكثر شهرة</string>
     <string name="upcoming">القادم</string>
     <string name="failedToGetData">فشل في الحصول على البيانات</string>
+    <string name="noInternetAvailable">لا يوجد انترنت</string>
 </resources>

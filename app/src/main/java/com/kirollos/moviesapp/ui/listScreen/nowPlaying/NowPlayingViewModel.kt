@@ -1,6 +1,5 @@
 package com.kirollos.moviesapp.ui.listScreen.nowPlaying
 
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kirollos.moviesapp.domain.GetConfigurationUseCase
@@ -25,42 +24,20 @@ class NowPlayingViewModel @Inject constructor(
 
     init {
         processIntent(NowPlayingIntent.GetConfigurations)
-        processIntent(
-            NowPlayingIntent.GetNowPlayingMovies(
-                language = Locale.current.language, page = 1
-            )
-        )
+        processIntent(NowPlayingIntent.GetNowPlayingMovies)
     }
 
     fun processIntent(intent: NowPlayingIntent) {
         when (intent) {
-            is NowPlayingIntent.GetNowPlayingMovies -> getNowPlayingMovies(intent)
+            is NowPlayingIntent.GetNowPlayingMovies -> getNowPlayingMovies()
             NowPlayingIntent.GetConfigurations -> getConfig()
         }
     }
 
-    private fun getNowPlayingMovies(intent: NowPlayingIntent.GetNowPlayingMovies) {
-        _uiState.update { it.copy(loading = true, movies = null, error = null) }
+    private fun getNowPlayingMovies() {
         viewModelScope.launch {
-            getNowPlayingMoviesUseCase.invoke(intent.language, intent.page).collectLatest { res ->
-                when (res) {
-                    is Resource.Failure -> {
-                        _uiState.update {
-                            it.copy(
-                                loading = false,
-                                movies = null,
-                                error = res.error
-                            )
-                        }
-                    }
-
-                    is Resource.Success -> {
-                        _uiState.update {
-                            it.copy(loading = false, movies = res.data, error = null)
-                        }
-                    }
-                }
-            }
+            val moviesFlow = getNowPlayingMoviesUseCase.invoke()
+            _uiState.update { it.copy(moviesFlow = moviesFlow) }
         }
     }
 

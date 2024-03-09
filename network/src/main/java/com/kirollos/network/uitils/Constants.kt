@@ -1,4 +1,6 @@
 package com.kirollos.network.uitils
 
-const val BASE_URL = "https://api.themoviedb.org/3/"
 const val CONFIG_KEY = "ConfigKey"
+const val TABLE_NOW_PLAYING_MOVIE = "NowPlayingMovie"
+const val TABLE_POPULAR_MOVIE = "PopularMovie"
+const val TABLE_UPCOMING_MOVIE = "UpcomingMovie"

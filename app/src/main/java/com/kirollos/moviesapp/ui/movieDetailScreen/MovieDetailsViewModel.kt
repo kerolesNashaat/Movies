@@ -50,16 +50,28 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun getMovieDetails(intent: MovieDetailsIntent.GetMovieDetails) {
-        _uiState.update { it.copy(loading = true) }
+        _uiState.update { it.copy(loading = true, error = null, movieDetail = null) }
         viewModelScope.launch {
             getMovieDetailsUseCase.invoke(language = intent.language, movieId = intent.movieId)
                 .collectLatest { res ->
                     when (res) {
                         is Resource.Failure ->
-                            _uiState.update { it.copy(loading = false, error = res.error) }
+                            _uiState.update {
+                                it.copy(
+                                    loading = false,
+                                    error = res.error,
+                                    movieDetail = null
+                                )
+                            }
 
                         is Resource.Success -> {
-                            _uiState.update { it.copy(loading = false, movieDetail = res.data) }
+                            _uiState.update {
+                                it.copy(
+                                    loading = false,
+                                    error = null,
+                                    movieDetail = res.data
+                                )
+                            }
                         }
                     }
                 }

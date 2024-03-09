@@ -59,6 +59,7 @@ data class MovieDetailDto(
     val voteCount: Int? = null
 ) : Parcelable {
     fun toMovieDetail() = MovieDetail(
+        id = id,
         genres = genres,
         overview = overview,
         posterPath = posterPath

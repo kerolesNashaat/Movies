@@ -1,6 +1,5 @@
 package com.kirollos.moviesapp.ui.listScreen.upcoming
 
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kirollos.moviesapp.domain.GetConfigurationUseCase
@@ -25,40 +24,20 @@ class UpcomingViewModel @Inject constructor(
 
     init {
         processIntent(UpcomingIntent.GetConfigurations)
-        processIntent(
-            UpcomingIntent.GetUpcomingMovies(language = Locale.current.language, page = 1)
-        )
+        processIntent(UpcomingIntent.GetUpcomingMovies)
     }
 
     fun processIntent(intent: UpcomingIntent) {
         when (intent) {
-            is UpcomingIntent.GetUpcomingMovies -> getUpcomingMovies(intent)
+            is UpcomingIntent.GetUpcomingMovies -> getUpcomingMovies()
             UpcomingIntent.GetConfigurations -> getConfig()
         }
     }
 
-    private fun getUpcomingMovies(intent: UpcomingIntent.GetUpcomingMovies) {
-        _uiState.update { it.copy(loading = true, movies = null, error = null) }
+    private fun getUpcomingMovies() {
         viewModelScope.launch {
-            getUpcomingMoviesUseCase.invoke(intent.language, intent.page).collectLatest { res ->
-                when (res) {
-                    is Resource.Failure -> {
-                        _uiState.update {
-                            it.copy(
-                                loading = false,
-                                movies = null,
-                                error = res.error
-                            )
-                        }
-                    }
-
-                    is Resource.Success -> {
-                        _uiState.update {
-                            it.copy(loading = false, movies = res.data, error = null)
-                        }
-                    }
-                }
-            }
+            val moviesFlow = getUpcomingMoviesUseCase.invoke()
+            _uiState.update { it.copy(moviesFlow = moviesFlow) }
         }
     }
 

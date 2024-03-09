@@ -7,16 +7,14 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kirollos.common.components.GetText
 import com.kirollos.common.size_60dp
 import com.kirollos.moviesapp.R
+import com.kirollos.moviesapp.ui.utils.currentRoute
 
 @Composable
 fun GetBottomAppBar(navController: NavHostController) {
@@ -37,19 +35,14 @@ fun BottomNavigationBar(navController: NavHostController) {
         BottomBarItem.Upcoming(mTitle = stringResource(id = R.string.upcoming)),
     )
 
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = backStackEntry?.destination
-
     NavigationBar(
         contentColor = Color.Transparent,
         containerColor = Color.Transparent
     ) {
         tabs.forEach { item ->
-            val isSelected = currentDestination?.hierarchy?.any {
-                it.route == item.route
-            }
+            val isSelected = currentRoute(navController) == item.route
             NavigationBarItem(
-                selected = isSelected ?: false,
+                selected = isSelected,
                 onClick = {
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId)
@@ -59,7 +52,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 label = {
                     GetText(
                         text = item.title,
-                        color = if (isSelected == true) MaterialTheme.colorScheme.tertiary
+                        color = if (isSelected) MaterialTheme.colorScheme.tertiary
                         else MaterialTheme.colorScheme.secondary
                     )
                 },

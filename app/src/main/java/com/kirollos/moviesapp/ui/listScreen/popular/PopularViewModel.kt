@@ -1,6 +1,5 @@
 package com.kirollos.moviesapp.ui.listScreen.popular
 
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kirollos.moviesapp.domain.GetConfigurationUseCase
@@ -25,40 +24,20 @@ class PopularViewModel @Inject constructor(
 
     init {
         processIntent(PopularIntent.GetConfigurations)
-        processIntent(
-            PopularIntent.GetPopularMovies(language = Locale.current.language, page = 1)
-        )
+        processIntent(PopularIntent.GetPopularMovies)
     }
 
     fun processIntent(intent: PopularIntent) {
         when (intent) {
-            is PopularIntent.GetPopularMovies -> getPopularMovies(intent)
+            is PopularIntent.GetPopularMovies -> getPopularMovies()
             PopularIntent.GetConfigurations -> getConfig()
         }
     }
 
-    private fun getPopularMovies(intent: PopularIntent.GetPopularMovies) {
-        _uiState.update { it.copy(loading = true, movies = null, error = null) }
+    private fun getPopularMovies() {
         viewModelScope.launch {
-            getPopularMoviesUseCase.invoke(intent.language, intent.page).collectLatest { res ->
-                when (res) {
-                    is Resource.Failure -> {
-                        _uiState.update {
-                            it.copy(
-                                loading = false,
-                                movies = null,
-                                error = res.error
-                            )
-                        }
-                    }
-
-                    is Resource.Success -> {
-                        _uiState.update {
-                            it.copy(loading = false, movies = res.data, error = null)
-                        }
-                    }
-                }
-            }
+            val moviesFlow = getPopularMoviesUseCase.invoke()
+            _uiState.update { it.copy(moviesFlow = moviesFlow) }
         }
     }
 

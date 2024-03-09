@@ -21,6 +21,9 @@ object Versions {
     const val COIL_VERSION = "2.6.0"
     const val ROOM_VERSION = "2.6.1"
     const val CRYPTO_VERSION = "1.0.0"
+    const val PAGING3_VERSION = "3.2.1"
+    const val PAGING3_COMPOSE_VERSION = "3.3.0-alpha03"
+    const val COMPOSE_JUNIT_VERSION = "1.6.2"
 }
 
 object Dependencies {
@@ -37,10 +40,10 @@ object Dependencies {
     const val COMPOSE_MATERIAL3_ANDROID =
         "androidx.compose.material3:material3-android:${Versions.COMPOSE_MATERIAL3_ANDROID_VERSION}"
     const val COMPOSE_UI_TEST_MANIFEST = "androidx.compose.ui:ui-test-manifest"
-
     const val ACTIVITY_COMPOSE =
         "androidx.activity:activity-compose:${Versions.ACTIVITY_COMPOSE_VERSION}"
-    const val COMPOSE_UI_TEST_JUNIT4 = "androidx.compose.ui:ui-test-junit4"
+
+    const val COMPOSE_UI_TEST_JUNIT4 = "androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE_JUNIT_VERSION}"
     const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.LIFECYCLE_VERSION}"
     const val DAGGER_HILT = "com.google.dagger:hilt-android:${Versions.DAGGER_HILT_VERSION}"
     const val DAGGER_HILT_COMPILIER =
@@ -66,5 +69,7 @@ object Dependencies {
     const val ROOM_RUNTIME = "androidx.room:room-runtime:${Versions.ROOM_VERSION}"
     const val ANDROID_CORE = "androidx.core:core-ktx:${Versions.ANDROID_CORE_VERSION}"
     const val CRYPTO = "androidx.security:security-crypto:${Versions.CRYPTO_VERSION}"
+    const val PAGING_RUNTIME = "androidx.paging:paging-runtime:${Versions.PAGING3_VERSION}"
+    const val PAGING3_COMPOSE = "androidx.paging:paging-compose:${Versions.PAGING3_COMPOSE_VERSION}"
 }
 
