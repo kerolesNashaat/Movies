@@ -1,4 +1,4 @@
-package com.kirollos.network.data.remote.mediator
+package com.kirollos.network.data.mediator
 
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi

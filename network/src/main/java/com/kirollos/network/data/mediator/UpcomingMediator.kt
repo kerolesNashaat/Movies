@@ -1,14 +1,15 @@
-package com.kirollos.network.data.remote.mediator
+package com.kirollos.network.data.mediator
 
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
 import com.kirollos.network.data.local.MoviesDatabase
-import com.kirollos.network.data.local.entity.NowPlayingMovieEntity
+import com.kirollos.network.data.local.entity.UpcomingMovieEntity
 import com.kirollos.network.data.remote.service.ApiService
-import com.kirollos.network.data.toNowPlayingMovieEntity
+import com.kirollos.network.data.toUpcomingMovieEntity
 import com.kirollos.network.uitils.checkNetworkAvailability
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
@@ -16,18 +17,19 @@ import java.io.IOException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class NowPlayingMediator @Inject constructor(
+class UpcomingMediator @Inject constructor(
     private val language: String,
     private val moviesDatabase: MoviesDatabase,
     private val apiService: ApiService,
     @ApplicationContext private val context: Context,
-) : RemoteMediator<Int, NowPlayingMovieEntity>() {
+) : RemoteMediator<Int, UpcomingMovieEntity>() {
+
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.SKIP_INITIAL_REFRESH
     }
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, NowPlayingMovieEntity>
+        state: PagingState<Int, UpcomingMovieEntity>
     ): MediatorResult {
         return try {
             val nextPage: Int = when (loadType) {
@@ -47,10 +49,10 @@ class NowPlayingMediator @Inject constructor(
             }
 
             if (checkNetworkAvailability(context)) {
-                val res = apiService.getNowPlayingMovies(language = language, page = nextPage)
+                val res = apiService.getUpcomingMovies(language = language, page = nextPage)
                 if (res.isSuccessful) {
                     moviesDatabase.moviesDao()
-                        .insertNowPlayingMovie(res.body()?.toNowPlayingMovieEntity()!!)
+                        .insertUpcomingMovie(res.body()?.toUpcomingMovieEntity()!!)
                 }
                 MediatorResult.Success(endOfPaginationReached = (res.body() == null))
             } else MediatorResult.Success(endOfPaginationReached = false)

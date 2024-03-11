@@ -6,5 +6,7 @@ import javax.inject.Inject
 class GetPopularMoviesUseCase @Inject constructor(
     private val repository: Repository
 ) {
-    suspend operator fun invoke() = repository.getPopularMovies()
+    suspend operator fun invoke() {
+//        repository.getPopularMovies()
+    }
 }

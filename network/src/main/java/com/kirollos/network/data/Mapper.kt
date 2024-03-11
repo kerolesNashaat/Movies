@@ -7,15 +7,14 @@ import com.kirollos.network.data.remote.dto.MovieDto
 import com.kirollos.network.domain.model.Movie
 
 //Now playing//
-fun MovieDto.toNowPlayingMovieEntity() =
-    NowPlayingMovieEntity(
-        id = 0,
-        datesDto = datesDto,
-        page = page,
-        resultList = resultEntities?.map { it?.toResult() },
-        totalPages = totalPages,
-        totalResults = totalResults
-    )
+fun MovieDto.toNowPlayingMovieEntity() = NowPlayingMovieEntity(
+    id = id,
+    datesDto = datesDto,
+    page = page,
+    resultList = resultEntities?.map { it?.toResult() }?.toMutableList(),
+    totalPages = totalPages,
+    totalResults = totalResults
+)
 
 fun NowPlayingMovieEntity.toMovie(): Movie =
     Movie(
@@ -33,7 +32,7 @@ fun MovieDto.toPopularMovieEntity() =
         id = 0,
         datesDto = datesDto,
         page = page,
-        resultList = resultEntities?.map { it?.toResult() },
+        resultList = resultEntities?.map { it?.toResult() }?.toMutableList(),
         totalPages = totalPages,
         totalResults = totalResults
     )
@@ -54,7 +53,7 @@ fun MovieDto.toUpcomingMovieEntity() =
         id = 0,
         datesDto = datesDto,
         page = page,
-        resultList = resultEntities?.map { it?.toResult() },
+        resultList = resultEntities?.map { it?.toResult() }?.toMutableList(),
         totalPages = totalPages,
         totalResults = totalResults
     )

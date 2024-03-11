@@ -19,7 +19,7 @@ data class UpcomingMovieEntity(
     @Ignore var datesDto: DatesDto? = null,
     var page: Int? = null,
     @TypeConverters(ListTypeConverter::class)
-    var resultList: List<Result?>? = null,
+    var resultList: MutableList<Result?>? = null,
     var totalPages: Int? = null,
     @Ignore var totalResults: Int? = null
 ) {

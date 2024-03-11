@@ -6,12 +6,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MovieDto(
+    val id: Long,
     @SerializedName("dates")
     val datesDto: DatesDto? = null,
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
-    val resultEntities: List<ResultDto?>? = null,
+    val resultEntities: MutableList<ResultDto?>? = null,
     @SerializedName("total_pages")
     val totalPages: Int? = null,
     @SerializedName("total_results")

@@ -7,16 +7,16 @@ import com.kirollos.network.domain.model.Result
 
 class ListTypeConverter(var gson: Gson = Gson()) {
     @TypeConverter
-    fun stringToSomeObjectList(data: String?): List<Result> {
+    fun stringToSomeObjectList(data: String?): MutableList<Result> {
         if (data == null) {
-            return emptyList()
+            return mutableListOf()
         }
-        val listType = object : TypeToken<List<Result?>?>() {}.type
+        val listType = object : TypeToken<MutableList<Result?>?>() {}.type
         return gson.fromJson(data, listType)
     }
 
     @TypeConverter
-    fun someObjectListToString(someObjects: List<Result?>?): String {
+    fun someObjectListToString(someObjects: MutableList<Result?>?): String {
         return gson.toJson(someObjects)
     }
 

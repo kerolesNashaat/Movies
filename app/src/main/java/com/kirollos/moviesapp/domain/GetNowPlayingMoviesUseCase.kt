@@ -4,5 +4,5 @@ import com.kirollos.network.domain.repository.Repository
 import javax.inject.Inject
 
 class GetNowPlayingMoviesUseCase @Inject constructor(private val repository: Repository) {
-    suspend operator fun invoke() = repository.getNowPlayingMovies()
+    suspend operator fun invoke(page: Int) = repository.getNowPlayingMovies(page)
 }

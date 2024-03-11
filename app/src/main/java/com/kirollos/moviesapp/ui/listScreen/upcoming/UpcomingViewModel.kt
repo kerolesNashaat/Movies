@@ -19,36 +19,36 @@ class UpcomingViewModel @Inject constructor(
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase
 ) : ViewModel() {
-    private var _uiState = MutableStateFlow(ListUiState())
-    var uiState = _uiState.asStateFlow()
-
-    init {
-        processIntent(UpcomingIntent.GetConfigurations)
-        processIntent(UpcomingIntent.GetUpcomingMovies)
-    }
-
-    fun processIntent(intent: UpcomingIntent) {
-        when (intent) {
-            is UpcomingIntent.GetUpcomingMovies -> getUpcomingMovies()
-            UpcomingIntent.GetConfigurations -> getConfig()
-        }
-    }
-
-    private fun getUpcomingMovies() {
-        viewModelScope.launch {
-            val moviesFlow = getUpcomingMoviesUseCase.invoke()
-            _uiState.update { it.copy(moviesFlow = moviesFlow) }
-        }
-    }
-
-    private fun getConfig() {
-        viewModelScope.launch {
-            getConfigurationUseCase.invoke().collectLatest { res ->
-                when (res) {
-                    is Resource.Failure -> {}
-                    is Resource.Success -> _uiState.update { it.copy(config = res.data) }
-                }
-            }
-        }
-    }
+//    private var _uiState = MutableStateFlow(ListUiState())
+//    var uiState = _uiState.asStateFlow()
+//
+//    init {
+//        processIntent(UpcomingIntent.GetConfigurations)
+//        processIntent(UpcomingIntent.GetUpcomingMovies)
+//    }
+//
+//    fun processIntent(intent: UpcomingIntent) {
+//        when (intent) {
+//            is UpcomingIntent.GetUpcomingMovies -> getUpcomingMovies()
+//            UpcomingIntent.GetConfigurations -> getConfig()
+//        }
+//    }
+//
+//    private fun getUpcomingMovies() {
+//        viewModelScope.launch {
+//            val moviesFlow = getUpcomingMoviesUseCase.invoke()
+//            _uiState.update { it.copy(moviesFlow = moviesFlow) }
+//        }
+//    }
+//
+//    private fun getConfig() {
+//        viewModelScope.launch {
+//            getConfigurationUseCase.invoke().collectLatest { res ->
+//                when (res) {
+//                    is Resource.Failure -> {}
+//                    is Resource.Success -> _uiState.update { it.copy(config = res.data) }
+//                }
+//            }
+//        }
+//    }
 }
