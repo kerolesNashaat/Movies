@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.kirollos.moviesapp.domain.GetConfigurationUseCase
 import com.kirollos.moviesapp.domain.GetUpcomingMoviesUseCase
 import com.kirollos.moviesapp.ui.utils.ListUiState
-import com.kirollos.network.data.remote.Resource
-import com.kirollos.network.domain.model.Result
+import com.kirollos.dataSource.data.remote.Resource
+import com.kirollos.dataSource.domain.model.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

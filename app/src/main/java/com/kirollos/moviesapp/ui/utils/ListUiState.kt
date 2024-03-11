@@ -1,8 +1,8 @@
 package com.kirollos.moviesapp.ui.utils
 
-import com.kirollos.network.domain.model.Configurations
-import com.kirollos.network.domain.model.Movie
-import com.kirollos.network.domain.model.MovieDetail
+import com.kirollos.dataSource.domain.model.Configurations
+import com.kirollos.dataSource.domain.model.Movie
+import com.kirollos.dataSource.domain.model.MovieDetail
 
 data class ListUiState(
     val loading: Boolean = false,

@@ -8,7 +8,7 @@ import com.kirollos.moviesapp.domain.GetConfigurationUseCase
 import com.kirollos.moviesapp.domain.GetMovieDetailsUseCase
 import com.kirollos.moviesapp.ui.utils.ListUiState
 import com.kirollos.moviesapp.ui.utils.PARAM_MOVIE_ID
-import com.kirollos.network.data.remote.Resource
+import com.kirollos.dataSource.data.remote.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

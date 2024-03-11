@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":network"))
+    implementation(project(":dataSource"))
     implementation(project(":common"))
     core()
     test()

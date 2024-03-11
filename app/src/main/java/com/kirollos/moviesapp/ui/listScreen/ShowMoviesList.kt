@@ -34,8 +34,8 @@ import com.kirollos.common.size_32dp
 import com.kirollos.common.size_400dp
 import com.kirollos.common.size_8dp
 import com.kirollos.moviesapp.R
-import com.kirollos.network.domain.model.Configurations
-import com.kirollos.network.domain.model.Movie
+import com.kirollos.dataSource.domain.model.Configurations
+import com.kirollos.dataSource.domain.model.Movie
 
 @Composable
 fun ShowMoviesList(

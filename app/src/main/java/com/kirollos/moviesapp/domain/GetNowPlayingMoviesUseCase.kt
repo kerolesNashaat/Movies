@@ -1,6 +1,6 @@
 package com.kirollos.moviesapp.domain
 
-import com.kirollos.network.domain.repository.Repository
+import com.kirollos.dataSource.domain.repository.Repository
 import javax.inject.Inject
 
 class GetNowPlayingMoviesUseCase @Inject constructor(private val repository: Repository) {
