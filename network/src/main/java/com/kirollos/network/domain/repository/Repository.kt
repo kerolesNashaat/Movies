@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
     suspend fun getNowPlayingMovies(page: Int): Flow<Resource<Movie>>
-//    suspend fun getPopularMovies(): Flow<PagingData<Movie>>
-//    suspend fun getUpcomingMovies(): Flow<PagingData<Movie>>
+    suspend fun getPopularMovies(page: Int): Flow<Resource<Movie>>
+    suspend fun getUpcomingMovies(page: Int): Flow<Resource<Movie>>
     suspend fun getMovieDetails(language: String, movieId: Int): Flow<Resource<MovieDetail>>
     suspend fun getConfigurations(): Flow<Resource<Configurations>>
 }

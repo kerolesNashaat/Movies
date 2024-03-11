@@ -1,64 +1,119 @@
 package com.kirollos.network.data.mediator
 
-import android.content.Context
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadType
-import androidx.paging.PagingState
-import androidx.paging.RemoteMediator
+import android.database.sqlite.SQLiteException
+import com.google.gson.Gson
 import com.kirollos.network.data.local.MoviesDatabase
 import com.kirollos.network.data.local.entity.NowPlayingMovieEntity
+import com.kirollos.network.data.remote.Resource
+import com.kirollos.network.data.remote.dto.ErrorResponse
+import com.kirollos.network.data.remote.dto.MovieDto
 import com.kirollos.network.data.remote.service.ApiService
+import com.kirollos.network.data.toMovie
 import com.kirollos.network.data.toNowPlayingMovieEntity
-import com.kirollos.network.uitils.checkNetworkAvailability
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.kirollos.network.domain.model.Movie
+import com.kirollos.network.uitils.UNHANDLED_ERROR
+import com.kirollos.network.uitils.language
+import com.kirollos.network.uitils.readTextAndClose
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
+import java.lang.Exception
 import javax.inject.Inject
 
-@OptIn(ExperimentalPagingApi::class)
 class NowPlayingMediator @Inject constructor(
-    private val language: String,
-    private val moviesDatabase: MoviesDatabase,
-    private val apiService: ApiService,
-    @ApplicationContext private val context: Context,
-) : RemoteMediator<Int, NowPlayingMovieEntity>() {
-    override suspend fun initialize(): InitializeAction {
-        return InitializeAction.SKIP_INITIAL_REFRESH
-    }
-    override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, NowPlayingMovieEntity>
-    ): MediatorResult {
-        return try {
-            val nextPage: Int = when (loadType) {
-                LoadType.REFRESH -> { 1 }
-                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-                LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
-                    if (lastItem == null) 1
-                    else {
-                        val nextPage = (lastItem.page ?: 1) + 1
-                        val totalPages = lastItem.totalPages ?: 1
-                        if (nextPage > totalPages)
-                            return MediatorResult.Success(endOfPaginationReached = true)
-                        else nextPage
+    private val apiService: ApiService, private val moviesDatabase: MoviesDatabase
+) {
+    suspend fun getMovies(page: Int): Flow<Resource<Movie>> =
+        callbackFlow {
+            try {
+                getCachedMovies(page).also { cashedMovies ->
+                    when (cashedMovies) {
+                        is Resource.Failure -> {
+                            getRemoteMoviesAndCash(language, page).also { res ->
+                                when (res) {
+                                    is Resource.Failure ->
+                                        trySend(Resource.Failure(code = null, error = res.error))
+
+                                    is Resource.Success -> trySend(Resource.Success(data = res.data))
+                                }
+                            }
+                        }
+
+                        is Resource.Success -> trySend(Resource.Success(data = cashedMovies.data))
                     }
                 }
+            } catch (ex: Exception) {
+                trySend(Resource.Failure(code = null, error = handleException(ex)))
             }
+            awaitClose()
+        }
 
-            if (checkNetworkAvailability(context)) {
-                val res = apiService.getNowPlayingMovies(language = language, page = nextPage)
-                if (res.isSuccessful) {
-                    moviesDatabase.moviesDao()
-                        .insertNowPlayingMovie(res.body()?.toNowPlayingMovieEntity()!!)
+    private suspend fun getCachedMovies(page: Int): Resource<Movie> {
+        return try {
+            val movieEntity = moviesDatabase.moviesDao().getNowPlayingMovie(page)
+            if (movieEntity == null) Resource.Failure(code = null, error = null)
+            else Resource.Success(data = movieEntity.toMovie())
+        } catch (ex: SQLiteException) {
+            Resource.Failure(code = null, error = handleException(ex))
+        }
+    }
+
+    private suspend fun getRemoteMoviesAndCash(
+        language: String, page: Int
+    ): Resource<Movie> {
+        return try {
+            val response = apiService.getNowPlayingMovies(language, page)
+
+            if (response.isSuccessful && response.body() != null) {
+                val movieEntity = response.body()!!.toNowPlayingMovieEntity()
+                cashMovies(movieEntity).also { res ->
+                    when (res) {
+                        is Resource.Failure -> Resource.Failure(
+                            code = response.code(),
+                            error = res.error
+                        )
+
+                        is Resource.Success -> Resource.Success(data = res.data)
+                    }
                 }
-                MediatorResult.Success(endOfPaginationReached = (res.body() == null))
-            } else MediatorResult.Success(endOfPaginationReached = false)
-
-        } catch (ex: IOException) {
-            MediatorResult.Error(ex)
+            } else {
+                val errorMessage = handleApiFailure(response)
+                Resource.Failure(code = response.code(), error = errorMessage)
+            }
         } catch (ex: HttpException) {
-            MediatorResult.Error(ex)
+            Resource.Failure(code = null, error = handleException(ex))
+        }
+
+    }
+
+    private suspend fun cashMovies(movieEntity: NowPlayingMovieEntity): Resource<Movie> {
+        return try {
+            val res = moviesDatabase.moviesDao().insertNowPlayingMovie(movieEntity)
+            if (res != -1L) Resource.Success(data = movieEntity.toMovie())
+            else Resource.Failure(code = null, error = null)
+        } catch (ex: SQLiteException) {
+            Resource.Failure(code = null, error = handleException(ex))
+        }
+    }
+
+    private fun handleException(ex: Exception): String {
+        ex.printStackTrace()
+        return ex.localizedMessage ?: UNHANDLED_ERROR
+    }
+
+    private fun handleApiFailure(response: Response<MovieDto>): String? {
+        return try {
+            val errorBody = response.errorBody()
+            if (errorBody != null) {
+                val errorString = errorBody.source().inputStream().readTextAndClose()
+                val errorResponse = Gson().fromJson(errorString, ErrorResponse::class.java)
+                errorResponse.statusMessage
+            } else UNHANDLED_ERROR
+        } catch (ex: IOException) {
+            handleException(ex)
         }
     }
 }

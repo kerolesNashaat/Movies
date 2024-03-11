@@ -1,8 +1,6 @@
 package com.kirollos.network.di
 
-import com.kirollos.network.data.mediator.MovieMediatorImpl
 import com.kirollos.network.data.repository.RepositoryImpl
-import com.kirollos.network.domain.mediator.MoviesMediator
 import com.kirollos.network.domain.repository.Repository
 import dagger.Binds
 import dagger.Module
@@ -17,9 +15,5 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindRepository(repositoryImpl: RepositoryImpl): Repository
-
-    @Binds
-    @Singleton
-    abstract fun bindMovieMediator(movieMediatorImpl: MovieMediatorImpl): MoviesMediator
 
 }

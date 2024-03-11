@@ -13,32 +13,22 @@ import com.kirollos.network.uitils.TABLE_UPCOMING_MOVIE
 @Dao
 interface MoviesDao {
     //Now Playing Table//
-    @Upsert
-    suspend fun insertNowPlayingMovie(movie: NowPlayingMovieEntity): Long
-
     @Query("SELECT * FROM $TABLE_NOW_PLAYING_MOVIE WHERE page = :page")
     suspend fun getNowPlayingMovie(page: Int): NowPlayingMovieEntity
 
-    @Query("DELETE FROM $TABLE_NOW_PLAYING_MOVIE")
-    suspend fun deleteNowPlayingMovies()
+    @Query("SELECT * FROM $TABLE_POPULAR_MOVIE WHERE page = :page")
+    suspend fun getPopularMovie(page: Int): PopularMovieEntity
 
-    //Popular Table//
+    @Query("SELECT * FROM $TABLE_UPCOMING_MOVIE WHERE page = :page")
+    suspend fun getUpcomingMovie(page: Int): UpcomingMovieEntity
+
+    @Upsert
+    suspend fun insertNowPlayingMovie(movie: NowPlayingMovieEntity): Long
+
     @Upsert
     suspend fun insertPopularMovie(movie: PopularMovieEntity): Long
 
-    @Query("SELECT * FROM $TABLE_POPULAR_MOVIE")
-    suspend fun getPopularMovie(): PopularMovieEntity
-
-    @Query("DELETE FROM $TABLE_POPULAR_MOVIE")
-    suspend fun deletePopularMovies()
-
-    //Upcoming Table//
     @Upsert
     suspend fun insertUpcomingMovie(movie: UpcomingMovieEntity): Long
 
-    @Query("SELECT * FROM $TABLE_UPCOMING_MOVIE")
-    suspend fun getUpcomingMovie(): UpcomingMovieEntity
-
-    @Query("DELETE FROM $TABLE_UPCOMING_MOVIE")
-    suspend fun deleteUpcomingMovies()
 }

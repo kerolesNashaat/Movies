@@ -1,13 +1,15 @@
 package com.kirollos.network.data.repository
 
 import com.google.gson.Gson
+import com.kirollos.network.data.mediator.NowPlayingMediator
+import com.kirollos.network.data.mediator.PopularMediator
+import com.kirollos.network.data.mediator.UpcomingMediator
 import com.kirollos.network.data.remote.Resource
 import com.kirollos.network.data.remote.dto.ConfigurationsDto
 import com.kirollos.network.data.remote.dto.ErrorResponse
 import com.kirollos.network.data.remote.dto.MovieDetailDto
 import com.kirollos.network.data.remote.service.ApiService
 import com.kirollos.network.data.remote.service.ApiServiceHelper
-import com.kirollos.network.domain.mediator.MoviesMediator
 import com.kirollos.network.domain.model.Configurations
 import com.kirollos.network.domain.model.Movie
 import com.kirollos.network.domain.model.MovieDetail
@@ -24,26 +26,18 @@ class RepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val apiServiceHelper: ApiServiceHelper,
     private val encryptedPreferences: EncryptedSharedPref,
-    private val moviesMediator: MoviesMediator
+    private val nowPlayingMediator: NowPlayingMediator,
+    private val popularMediator: PopularMediator,
+    private val upcomingMediator: UpcomingMediator
 ) : Repository {
     override suspend fun getNowPlayingMovies(page: Int): Flow<Resource<Movie>> =
-        moviesMediator.getMovies(page)
+        nowPlayingMediator.getMovies(page)
 
+    override suspend fun getPopularMovies(page: Int): Flow<Resource<Movie>> =
+        popularMediator.getMovies(page)
 
-//    override suspend fun getNowPlayingMovies(): Flow<PagingData<Movie>> =
-//        nowPlayingPager.flow.map { pagingData ->
-//            pagingData.map { it.toMovie() }
-//        }
-//
-//    override suspend fun getPopularMovies(): Flow<PagingData<Movie>> =
-//        popularPager.flow.map { pagingData ->
-//            pagingData.map { it.toMovie() }
-//        }
-//
-//    override suspend fun getUpcomingMovies(): Flow<PagingData<Movie>> =
-//        upcomingPager.flow.map { pagingData ->
-//            pagingData.map { it.toMovie() }
-//        }
+    override suspend fun getUpcomingMovies(page: Int): Flow<Resource<Movie>> =
+        upcomingMediator.getMovies(page)
 
     override suspend fun getMovieDetails(
         language: String,
