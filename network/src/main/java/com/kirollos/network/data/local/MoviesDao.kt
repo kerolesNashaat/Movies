@@ -1,8 +1,6 @@
 package com.kirollos.network.data.local
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
 import com.kirollos.network.data.local.entity.NowPlayingMovieEntity
@@ -15,32 +13,22 @@ import com.kirollos.network.uitils.TABLE_UPCOMING_MOVIE
 @Dao
 interface MoviesDao {
     //Now Playing Table//
-    @Insert
-    suspend fun insertNowPlayingMovie(movie: NowPlayingMovieEntity)
+    @Query("SELECT * FROM $TABLE_NOW_PLAYING_MOVIE WHERE page = :page")
+    suspend fun getNowPlayingMovie(page: Int): NowPlayingMovieEntity
 
-    @Query("SELECT * FROM $TABLE_NOW_PLAYING_MOVIE")
-    fun getNowPlayingMovie(): PagingSource<Int, NowPlayingMovieEntity>
+    @Query("SELECT * FROM $TABLE_POPULAR_MOVIE WHERE page = :page")
+    suspend fun getPopularMovie(page: Int): PopularMovieEntity
 
-    @Query("DELETE FROM $TABLE_NOW_PLAYING_MOVIE")
-    suspend fun deleteNowPlayingMovies()
+    @Query("SELECT * FROM $TABLE_UPCOMING_MOVIE WHERE page = :page")
+    suspend fun getUpcomingMovie(page: Int): UpcomingMovieEntity
 
-    //Popular Table//
-    @Insert
-    suspend fun insertPopularMovie(movie: PopularMovieEntity)
+    @Upsert
+    suspend fun insertNowPlayingMovie(movie: NowPlayingMovieEntity): Long
 
-    @Query("SELECT * FROM $TABLE_POPULAR_MOVIE")
-    fun getPopularMovie(): PagingSource<Int, PopularMovieEntity>
+    @Upsert
+    suspend fun insertPopularMovie(movie: PopularMovieEntity): Long
 
-    @Query("DELETE FROM $TABLE_POPULAR_MOVIE")
-    suspend fun deletePopularMovies()
+    @Upsert
+    suspend fun insertUpcomingMovie(movie: UpcomingMovieEntity): Long
 
-    //Upcoming Table//
-    @Insert
-    suspend fun insertUpcomingMovie(movie: UpcomingMovieEntity)
-
-    @Query("SELECT * FROM $TABLE_UPCOMING_MOVIE")
-    fun getUpcomingMovie(): PagingSource<Int, UpcomingMovieEntity>
-
-    @Query("DELETE FROM $TABLE_UPCOMING_MOVIE")
-    suspend fun deleteUpcomingMovies()
 }

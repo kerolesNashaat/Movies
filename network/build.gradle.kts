@@ -28,7 +28,6 @@ dependencies {
     retrofit()
     crypto()
     room()
-    paging3()
 }
 
 // Allow references to generated code

@@ -61,7 +61,6 @@ dependencies {
     hilt()
     coil()
     navigation()
-    paging3()
 }
 
 kapt {

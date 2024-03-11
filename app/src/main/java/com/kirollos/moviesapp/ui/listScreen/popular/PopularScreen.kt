@@ -1,22 +1,19 @@
 package com.kirollos.moviesapp.ui.listScreen.popular
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
+import com.kirollos.common.components.ErrorContent
+import com.kirollos.moviesapp.R
 import com.kirollos.moviesapp.ui.listScreen.ShowMoviesList
-import kotlinx.coroutines.delay
 
 @Composable
 fun PopularScreen(
@@ -24,35 +21,32 @@ fun PopularScreen(
     onCardClick: (movieId: Int) -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val lazyMovies = state.moviesFlow!!.collectAsLazyPagingItems()
     val config = state.config
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = lazyMovies.loadState) {
-        when (lazyMovies.loadState.refresh) {
-            is LoadState.Loading -> {}
-
-            is LoadState.Error -> {
-                Toast.makeText(
-                    context,
-                    (lazyMovies.loadState.refresh as LoadState.Error).error.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            is LoadState.NotLoading -> {}
-        }
-    }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (lazyMovies.loadState.refresh is LoadState.Loading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else ShowMoviesList(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth(),
-            lazyMovies = lazyMovies, configurations = config,
-            onCardClick = onCardClick
-        )
+        when {
+            state.movie != null -> ShowMoviesList(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(),
+                movie = state.movie!!,
+                loadingItem = state.loadingItem,
+                configurations = config,
+                onCardClick = onCardClick,
+                onReachedListEnd = {
+                    viewModel.processIntent(PopularIntent.LoadMoreMovies(it))
+                }
+            )
+
+            state.error != null -> ErrorContent(
+                errorMessage = state.error ?: stringResource(id = R.string.failedToGetData),
+                refreshIcon = R.drawable.icon_refresh,
+                onRefreshIconClicked = {
+                    viewModel.processIntent(PopularIntent.GetPopularMovies(1))
+                }
+            )
+
+            state.loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
     }
 }

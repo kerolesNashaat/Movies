@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.compose.ui.text.intl.Locale
 import java.io.InputStream
 import java.nio.charset.Charset
 
@@ -29,4 +30,9 @@ fun checkNetworkAvailability(context: Context): Boolean {
     } else {
         return connectivityManager.activeNetworkInfo?.isConnected ?: false
     }
+}
+
+
+val language by lazy {
+    Locale.current.language
 }
